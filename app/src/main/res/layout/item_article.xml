@@ -27,16 +27,18 @@
         android:textAppearance="@style/TextAppearance.AppCompat.Light.SearchResult.Title"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toEndOf="@id/mediaImage"
-        app:layout_constraintTop_toTopOf="@+id/mediaImage" />
+        app:layout_constraintTop_toTopOf="@+id/mediaImage"
+        />
 
     <TextView
         android:id="@+id/mediaAbstract"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
+        android:layout_width="258dp"
+        android:layout_height="120dp"
         android:layout_marginStart="10dp"
         android:layout_marginTop="10dp"
         android:layout_marginEnd="10dp"
         android:ellipsize="end"
+        android:fontFamily="@font/lobster"
         android:maxLines="4"
         android:text="Abstract"
         android:textAppearance="@style/TextAppearance.AppCompat.Light.SearchResult.Subtitle"
