@@ -59,6 +59,7 @@ class ArticleAdapter(private val context: Context, private val articles: List<Ar
             Glide.with(context)
                 .load(article.mediaImageUrl)
                 .into(mediaImageView)
+
         }
     }
 }
