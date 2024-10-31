@@ -1,52 +1,57 @@
-# Lab 4: Article Search
+# Lab 5: ArticleSearch Pt 2
 
-Course Link: [CodePath Android Course](https://courses.codepath.org/courses/and102/unit/4#!labs)
+Course Link: [CodePath Android Course](https://courses.codepath.org/courses/and102/unit/5#!labs)
 
-Submitted by: **CHARLES WANG** <!-- Replace 'Your Name Here' with your actual name -->
+Submitted by: **Charles Wang** <!-- Replace 'Your Name Here' with your actual name -->
 
-**Article Search** is an app designed to display the most recent articles from the NY Times.
+**NYT Article Search Pt 2** is an app designed to maintain functionality while offline by caching the latest data fetched from the NYT API, ensuring a smooth user experience even without network connectivity.
 
-Time spent: **2** hours spent in total <!-- Replace 'X' with the number of hours you spent on this project -->
+Time spent: **3** hours spent in total <!-- Replace 'X' with the number of hours you spent on this project -->
 
-## Application Features
+## Application Features 
 
 ### Required Features
 
 The following **required** functionality is completed:
 
-- [x] (3 pts) **Articles are displayed using the RecyclerView.**
-  - <img src='ARTICLE SEARCH DEMO.gif' />
+- [x] (2 pts) **Most recently fetched data is stored locally in a database**
+  - The app should cache the latest articles fetched from the NYT API in a local SQLite database using Room.
+  - If the user has fetched data recently, those articles should be available offline.
+  - Ensure old cached data is properly replaced with new data upon successful network fetches.
+  -<img src='ARTICLE SEARCH DEMO.gif' > <!-- Replace this link with your actual image/GIF link -->
 
-- [x] (4 pts) **Can navigate to the Article Details screen.**
-    - <img src='ARTICLE SEARCH DEMO.gif' />
-
-- [x] (3 pts) **Article images are downloaded and displayed using Glide.**
-  -  <img src='ARTICLE SEARCH DEMO.gif' />
-
-
+- [x] (2 pts) **If user turns on airplane mode and closes and reopens app, old data from the database should be loaded**
+<img src='ARTICLE SEARCH DEMO.gif' >
 ### Stretch Features
 
 The following **stretch** functionality is implemented:
 
-- [x] (+2 pts bonus) **Enhanced the UI for the application with customized fonts and ConstraintLayout for each of the screens.**
-  -  <img src='ARTICLE SEARCH DEMO.gif'>
+- [x] (2 pts) **Add Swipe To Refresh to force a new network call to get new data**
+<img src='ARTICLE SEARCH DEMO.gif' >
+- [x] (2 pts) **Add setting toggle for user to create preference for caching data or not (Using Shared Preferences)**
+<img src='ARTICLE SEARCH DEMO.gif' >
+- [ ] (+3 pts) **Implement a Search UI to filter current RecyclerView entries or fetch data from the search API with query**
+  - ![GIF showing Search UI functionality](http://i.imgur.com/link/to/your/gif/file.gif) <!-- Replace this link with your actual image/GIF link -->
 
-
+- [x] (2 pts) **Listen to network connectivity changes and create a UI to let people know they are offline and automatically reload new data if connectivity returns**
+<img src='ARTICLE SEARCH DEMO.gif' >
 ## Notes
 
 Describe any challenges encountered while building the app. <!-- Replace this with your specific challenges and experiences -->
 
 ## Resources
 
-- [Using Intents to Create Flows](https://guides.codepath.org/android/Using-Intents-to-Create-Flows)
-- [AsyncHTTPClient](https://guides.codepath.org/android/Using-CodePath-Async-Http-Client)
-- [GridLayoutManager](https://developer.android.com/reference/kotlin/androidx/recyclerview/widget/GridLayoutManager)
-- [GridView in Android](https://www.geeksforgeeks.org/gridview-in-android-with-example/)
+- [Data storage with Room](https://developer.android.com/training/data-storage/room)
+- [Swipe To Refresh](https://developer.android.com/training/swipe/add-swipe-interface)
+- [Save key-value data with Shared Preferences](https://developer.android.com/training/data-storage/shared-preferences)
+- [Android Search View](https://developer.android.com/reference/android/widget/SearchView)
+- [Monitor connectivity status and connection metering](https://developer.android.com/training/monitoring-device-state/connectivity-status-type)
+- [Kotlin Coroutines](https://kotlinlang.org/docs/coroutines-overview.html)
 
 ## License
 
 ```plaintext
-    Copyright [2002] [Charles Wang]
+    Copyright [2024] [Charles Wang]
 
     Licensed under the Apache License, Version 2.0 (the "License");
     you may not use this file except in compliance with the License.

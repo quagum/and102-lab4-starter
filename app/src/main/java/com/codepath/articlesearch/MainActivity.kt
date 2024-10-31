@@ -1,6 +1,7 @@
 package com.codepath.articlesearch
 
 import android.content.IntentFilter
+import android.content.SharedPreferences
 import android.net.ConnectivityManager
 import android.os.Bundle
 import android.util.Log
@@ -41,12 +42,16 @@ class MainActivity : AppCompatActivity() {
 
     private lateinit var offlineStatus: TextView
     private lateinit var networkChangeReceiver: NetworkChangeReceiver
+    private lateinit var sharedPreferences: SharedPreferences
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityMainBinding.inflate(layoutInflater)
         val view = binding.root
         setContentView(view)
+
+        sharedPreferences = getSharedPreferences("user_prefs", MODE_PRIVATE)
+        val isCachingEnabled = sharedPreferences.getBoolean("cache_data", false)
 
         articlesRecyclerView = findViewById(R.id.articles)
         swipeContainer = findViewById(R.id.swipeContainer)
@@ -78,17 +83,17 @@ class MainActivity : AppCompatActivity() {
         }
 
         swipeContainer.setOnRefreshListener {
-            fetchData(articleAdapter)
+            fetchData(articleAdapter, isCachingEnabled)
         }
 
-        fetchData(articleAdapter)
+        fetchData(articleAdapter, isCachingEnabled)
 
         // Set up network change receiver
         networkChangeReceiver = NetworkChangeReceiver(
             onNetworkAvailable = {
                 offlineStatus.visibility = View.GONE
                 Toast.makeText (this, "Network is available", Toast.LENGTH_SHORT).show()
-                fetchData(articleAdapter)
+                fetchData(articleAdapter, isCachingEnabled)
             },
             onNetworkUnavailable = {
                 offlineStatus.visibility = View.VISIBLE
@@ -103,7 +108,7 @@ class MainActivity : AppCompatActivity() {
         unregisterReceiver(networkChangeReceiver)
     }
 
-    private fun fetchData(articleAdapter: ArticleAdapter) {
+    private fun fetchData(articleAdapter: ArticleAdapter, isCachingEnabled: Boolean) {
         val client = AsyncHttpClient()
         client.get(ARTICLE_SEARCH_URL, object : JsonHttpResponseHandler() {
             override fun onFailure(
@@ -124,16 +129,18 @@ class MainActivity : AppCompatActivity() {
                         json.jsonObject.toString()
                     )
                     parsedJson.response?.docs?.let { list ->
-                        lifecycleScope.launch(IO) {
-                            (application as ArticleApplication).db.articleDao().deleteAll()
-                            (application as ArticleApplication).db.articleDao().insertAll(list.map {
-                                ArticleEntity(
-                                    headline = it.headline?.main,
-                                    articleAbstract = it.abstract,
-                                    byline = it.byline?.original,
-                                    mediaImageUrl = it.mediaImageUrl
-                                )
-                            })
+                        if (isCachingEnabled) {
+                            lifecycleScope.launch(IO) {
+                                (application as ArticleApplication).db.articleDao().deleteAll()
+                                (application as ArticleApplication).db.articleDao().insertAll(list.map {
+                                    ArticleEntity(
+                                        headline = it.headline?.main,
+                                        articleAbstract = it.abstract,
+                                        byline = it.byline?.original,
+                                        mediaImageUrl = it.mediaImageUrl
+                                    )
+                                })
+                            }
                         }
                         articles.clear()
                         articles.addAll(list.map {
