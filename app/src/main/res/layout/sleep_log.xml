@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:padding="16dp">
+
+    <!-- Date TextView -->
+    <TextView
+        android:id="@+id/logDate"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:text="Date"
+        android:textStyle="bold"
+        android:textSize="16sp"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent" />
+
+    <!-- Hours of Sleep TextView -->
+    <TextView
+        android:id="@+id/logHoursOfSleep"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:text="Hours of Sleep: 8"
+        android:textSize="14sp"
+        app:layout_constraintTop_toBottomOf="@id/logDate"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent" />
+
+    <!-- Quality of Sleep TextView -->
+    <TextView
+        android:id="@+id/logQualityOfSleep"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:text="Quality of Sleep: 7"
+        android:textSize="14sp"
+        app:layout_constraintTop_toBottomOf="@id/logHoursOfSleep"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent" />
+
+    <!-- Notes TextView -->
+    <TextView
+        android:id="@+id/logNotes"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:text="Notes: Slept well"
+        android:textSize="14sp"
+        app:layout_constraintTop_toBottomOf="@id/logQualityOfSleep"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>

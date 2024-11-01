@@ -1,164 +1,133 @@
 package com.codepath.articlesearch
 
-import android.content.IntentFilter
-import android.content.SharedPreferences
-import android.net.ConnectivityManager
 import android.os.Bundle
 import android.util.Log
-import android.view.View
+import android.widget.Button
+import android.widget.EditText
+import android.widget.SeekBar
 import android.widget.TextView
-import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.codepath.articlesearch.databinding.ActivityMainBinding
-import com.codepath.asynchttpclient.AsyncHttpClient
-import com.codepath.asynchttpclient.callback.JsonHttpResponseHandler
-import kotlinx.coroutines.Dispatchers.IO
+import com.google.android.material.slider.Slider
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
-import kotlinx.serialization.json.Json
-import okhttp3.Headers
-import org.json.JSONException
-import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
-
-fun createJson() = Json {
-    isLenient = true
-    ignoreUnknownKeys = true
-    useAlternativeNames = false
-}
+import java.text.SimpleDateFormat
+import java.util.Calendar
+import java.util.Locale
 
 private const val TAG = "MainActivity/"
-private const val SEARCH_API_KEY = BuildConfig.API_KEY
-private const val ARTICLE_SEARCH_URL =
-    "https://api.nytimes.com/svc/search/v2/articlesearch.json?api-key=${SEARCH_API_KEY}"
 
 class MainActivity : AppCompatActivity() {
-    private lateinit var articlesRecyclerView: RecyclerView
-    private lateinit var swipeContainer: SwipeRefreshLayout
     private lateinit var binding: ActivityMainBinding
-    private val articles = mutableListOf<DisplayArticle>()
+    private lateinit var sleepLogAdapter: SleepLogAdapter
+    private lateinit var sleepLogRecyclerView:  RecyclerView
+    private lateinit var yesterday_date: String
 
-    private lateinit var offlineStatus: TextView
-    private lateinit var networkChangeReceiver: NetworkChangeReceiver
-    private lateinit var sharedPreferences: SharedPreferences
+    private val logs = mutableListOf<SleepLog>()
+    private var average_hours = ""
+    private var average_rating = ""
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityMainBinding.inflate(layoutInflater)
-        val view = binding.root
-        setContentView(view)
+        setContentView(binding.root)
 
-        sharedPreferences = getSharedPreferences("user_prefs", MODE_PRIVATE)
-        val isCachingEnabled = sharedPreferences.getBoolean("cache_data", false)
+        fetchLogsFromDatabase() // Fetch data in a coroutine
 
-        articlesRecyclerView = findViewById(R.id.articles)
-        swipeContainer = findViewById(R.id.swipeContainer)
-
-        offlineStatus = findViewById(R.id.offlineStatus)
-
-        val articleAdapter = ArticleAdapter(this, articles)
-        lifecycleScope.launch {
-            (application as ArticleApplication).db.articleDao().getAll().collect { databaseList ->
-                databaseList.map { entity ->
-                    DisplayArticle(
-                        entity.headline,
-                        entity.articleAbstract,
-                        entity.byline,
-                        entity.mediaImageUrl
-                    )
-                }.also { mappedList ->
-                    articles.clear()
-                    articles.addAll(mappedList)
-                    articleAdapter.notifyDataSetChanged()
-                }
-            }
-        }
-
-        articlesRecyclerView.adapter = articleAdapter
-        articlesRecyclerView.layoutManager = LinearLayoutManager(this).also {
+        //setup recycler view
+        sleepLogRecyclerView = findViewById(R.id.sleepLogs)
+        sleepLogAdapter = SleepLogAdapter(this, logs)
+        sleepLogRecyclerView.adapter = sleepLogAdapter
+        sleepLogRecyclerView.layoutManager = LinearLayoutManager(this).also {
             val dividerItemDecoration = DividerItemDecoration(this, it.orientation)
-            articlesRecyclerView.addItemDecoration(dividerItemDecoration)
+            sleepLogRecyclerView.addItemDecoration(dividerItemDecoration)
         }
 
-        swipeContainer.setOnRefreshListener {
-            fetchData(articleAdapter, isCachingEnabled)
+
+        // Initialize date input view
+        val dateInput = findViewById<EditText>(R.id.dateInput)
+
+        // Set default date to the previous night
+        val calendar = Calendar.getInstance()
+        calendar.add(Calendar.DATE, -1)
+        val dateFormat = SimpleDateFormat("yyyy-MM-dd", Locale.getDefault())
+        yesterday_date = dateFormat.format(calendar.time)
+        dateInput.setText(yesterday_date)
+
+        findViewById<Button>(R.id.submitButton).setOnClickListener {
+            submitLogEntry()
+        }
+    }
+
+    private fun submitLogEntry() {
+        // Read slider values on the main thread
+        var date = findViewById<EditText>(R.id.dateInput).text.toString()
+        val hours = findViewById<Slider>(R.id.hoursOfSleepSlider).value.toString()
+        val quality =  findViewById<Slider>(R.id.qualityOfSleepSlider).value.toString()
+        var note = findViewById<EditText>(R.id.notesInput).text.toString()
+
+        // Validate inputs
+        if (date.isEmpty()) {
+           date = yesterday_date
+        }
+        if (note.isEmpty()) {
+            note = "no notes"
         }
 
-        fetchData(articleAdapter, isCachingEnabled)
+        // Create a new log entry
+        val log = SleepLog(date, hours, quality, note)
+        logs.add(log)
+        sleepLogAdapter.notifyItemInserted(logs.size - 1)
 
-        // Set up network change receiver
-        networkChangeReceiver = NetworkChangeReceiver(
-            onNetworkAvailable = {
-                offlineStatus.visibility = View.GONE
-                Toast.makeText (this, "Network is available", Toast.LENGTH_SHORT).show()
-                fetchData(articleAdapter, isCachingEnabled)
-            },
-            onNetworkUnavailable = {
-                offlineStatus.visibility = View.VISIBLE
-                Toast.makeText (this, "Network is unavailable", Toast.LENGTH_SHORT).show()
-            })
-        val filter = IntentFilter(ConnectivityManager.CONNECTIVITY_ACTION)
-        registerReceiver(networkChangeReceiver, filter)
-    }
-
-    override fun onDestroy(){
-        super.onDestroy()
-        unregisterReceiver(networkChangeReceiver)
-    }
-
-    private fun fetchData(articleAdapter: ArticleAdapter, isCachingEnabled: Boolean) {
-        val client = AsyncHttpClient()
-        client.get(ARTICLE_SEARCH_URL, object : JsonHttpResponseHandler() {
-            override fun onFailure(
-                statusCode: Int,
-                headers: Headers?,
-                response: String?,
-                throwable: Throwable?
-            ) {
-                Log.e(TAG, "Failed to fetch articles: $statusCode")
-                swipeContainer.isRefreshing = false
+        // Insert the log into the database
+        lifecycleScope.launch(Dispatchers.IO) {
+            (application as SleepLogApplication).db.sleepLogDao().insertAll(listOf(SleepLogEntity(
+                date_of_night = date,
+                hours_slept = hours,
+                sleep_rating = quality,
+                note = note
+            )))
+            val average_hours = (application as SleepLogApplication).db.sleepLogDao().getAverageHours()?.toString() ?: "N/A"
+            val average_rating = (application as SleepLogApplication).db.sleepLogDao().getAverageRating()?.toString() ?: "N/A"
+            //fill in averages view
+            val averageTextView = findViewById<TextView>(R.id.averageSleepData)
+            lifecycleScope.launch(Dispatchers.Main) {
+                averageTextView.text = "Average Hours: $average_hours\nAverage Quality: $average_rating"
             }
 
-            override fun onSuccess(statusCode: Int, headers: Headers, json: JSON) {
-                Log.i(TAG, "Successfully fetched articles: $json")
-                try {
-                    val parsedJson = createJson().decodeFromString(
-                        SearchNewsResponse.serializer(),
-                        json.jsonObject.toString()
+        }
+
+        // Clear input fields
+        clearInputFields()
+    }
+
+    private fun clearInputFields() {
+        binding.dateInput.setText(yesterday_date)
+        binding.hoursOfSleepSlider.value = 0f
+        binding.qualityOfSleepSlider.value = 1f
+        binding.notesInput.text.clear()
+    }
+
+    private fun fetchLogsFromDatabase() {
+        lifecycleScope.launch {
+            (application as SleepLogApplication).db.sleepLogDao().getAll().collect { databaseList ->
+                val mappedList = databaseList.map { entity ->
+                    SleepLog(
+                        entity.date_of_night ?: "No Date",
+                        entity.hours_slept ?: "0",
+                        entity.sleep_rating ?: "1",
+                        entity.note ?: "No Notes"
                     )
-                    parsedJson.response?.docs?.let { list ->
-                        if (isCachingEnabled) {
-                            lifecycleScope.launch(IO) {
-                                (application as ArticleApplication).db.articleDao().deleteAll()
-                                (application as ArticleApplication).db.articleDao().insertAll(list.map {
-                                    ArticleEntity(
-                                        headline = it.headline?.main,
-                                        articleAbstract = it.abstract,
-                                        byline = it.byline?.original,
-                                        mediaImageUrl = it.mediaImageUrl
-                                    )
-                                })
-                            }
-                        }
-                        articles.clear()
-                        articles.addAll(list.map {
-                            DisplayArticle(
-                                it.headline?.main,
-                                it.abstract,
-                                it.byline?.original,
-                                it.mediaImageUrl
-                            )
-                        })
-                        articleAdapter.notifyDataSetChanged()
-                        swipeContainer.isRefreshing = false
-                    }
-                } catch (e: JSONException) {
-                    Log.e(TAG, "Exception: $e")
-                    swipeContainer.isRefreshing = false
                 }
+                // Clear and add new logs
+                logs.clear()
+                logs.addAll(mappedList)
+                sleepLogAdapter.notifyDataSetChanged() // Notify adapter of changes
             }
-        })
+        }
     }
 }

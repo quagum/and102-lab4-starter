@@ -16,7 +16,7 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.ArticleSearch"
         tools:targetApi="31"
-        android:name=".ArticleApplication">
+        android:name=".SleepLogApplication">
         <!-- Detail Activity -->
         <activity android:name=".DetailActivity"
             android:exported="true" />
