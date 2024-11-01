@@ -1,57 +1,52 @@
-# Lab 5: ArticleSearch Pt 2
+# Android Project 5 - *Name of App Here*
 
-Course Link: [CodePath Android Course](https://courses.codepath.org/courses/and102/unit/5#!labs)
+Submitted by: **Charles wang**
 
-Submitted by: **Charles Wang** <!-- Replace 'Your Name Here' with your actual name -->
+**FitBit** is a health metrics app that allows users to track ... [TODO] 
 
-**NYT Article Search Pt 2** is an app designed to maintain functionality while offline by caching the latest data fetched from the NYT API, ensuring a smooth user experience even without network connectivity.
+Time spent: **4** hours spent in total
 
-Time spent: **3** hours spent in total <!-- Replace 'X' with the number of hours you spent on this project -->
-
-## Application Features 
-
-### Required Features
+## Required Features
 
 The following **required** functionality is completed:
 
-- [x] (2 pts) **Most recently fetched data is stored locally in a database**
-  - The app should cache the latest articles fetched from the NYT API in a local SQLite database using Room.
-  - If the user has fetched data recently, those articles should be available offline.
-  - Ensure old cached data is properly replaced with new data upon successful network fetches.
-  -<img src='ARTICLE SEARCH DEMO.gif' > <!-- Replace this link with your actual image/GIF link -->
+- [x] **At least one health metric is tracked (based on user input)**
+  - Chosen metric(s): `SLEEP`
+- [x] **There is a "create entry" UI that prompts users to make their daily entry**
+- [x] **New entries are saved in a database and then updated in the RecyclerView**
+- [x] **On application restart, previously entered entries are preserved (i.e., are *persistent*)**
 
-- [x] (2 pts) **If user turns on airplane mode and closes and reopens app, old data from the database should be loaded**
-<img src='ARTICLE SEARCH DEMO.gif' >
-### Stretch Features
+The following **optional** features are implemented:
 
-The following **stretch** functionality is implemented:
+- [x] **Create a UI for tracking averages and trends in metrics**
+- [x] **Improve and customize the user interface through styling and coloring**
+- [x] **Implement orientation responsivity**
+- [ ] **Add a daily photo feature**
 
-- [x] (2 pts) **Add Swipe To Refresh to force a new network call to get new data**
-<img src='ARTICLE SEARCH DEMO.gif' >
-- [x] (2 pts) **Add setting toggle for user to create preference for caching data or not (Using Shared Preferences)**
-<img src='ARTICLE SEARCH DEMO.gif' >
-- [ ] (+3 pts) **Implement a Search UI to filter current RecyclerView entries or fetch data from the search API with query**
-  - ![GIF showing Search UI functionality](http://i.imgur.com/link/to/your/gif/file.gif) <!-- Replace this link with your actual image/GIF link -->
+The following **additional** features are implemented:
 
-- [x] (2 pts) **Listen to network connectivity changes and create a UI to let people know they are offline and automatically reload new data if connectivity returns**
-<img src='ARTICLE SEARCH DEMO.gif' >
+- [ ] List anything else that you can get done to improve the app functionality!
+
+## Video Walkthrough
+
+Here's a walkthrough of implemented user stories:
+
+<img src='bitfit demo.gif' title='Video Walkthrough' width='' alt='Video Walkthrough' />
+
+<!-- Replace this with whatever GIF tool you used! -->
+GIF created with ...  
+<!-- Recommended tools:
+[Kap](https://getkap.co/) for macOS
+[ScreenToGif](https://www.screentogif.com/) for Windows
+[peek](https://github.com/phw/peek) for Linux. -->
+
 ## Notes
 
-Describe any challenges encountered while building the app. <!-- Replace this with your specific challenges and experiences -->
-
-## Resources
-
-- [Data storage with Room](https://developer.android.com/training/data-storage/room)
-- [Swipe To Refresh](https://developer.android.com/training/swipe/add-swipe-interface)
-- [Save key-value data with Shared Preferences](https://developer.android.com/training/data-storage/shared-preferences)
-- [Android Search View](https://developer.android.com/reference/android/widget/SearchView)
-- [Monitor connectivity status and connection metering](https://developer.android.com/training/monitoring-device-state/connectivity-status-type)
-- [Kotlin Coroutines](https://kotlinlang.org/docs/coroutines-overview.html)
+Describe any challenges encountered while building the app.
 
 ## License
 
-```plaintext
-    Copyright [2024] [Charles Wang]
+    Copyright [yyyy] [name of copyright owner]
 
     Licensed under the Apache License, Version 2.0 (the "License");
     you may not use this file except in compliance with the License.
