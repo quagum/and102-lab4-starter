@@ -1,4 +1,4 @@
-# Android Project 5 - *Name of App Here*
+# Android Project 5 - *Fitbit*
 
 Submitted by: **Charles wang**
 
