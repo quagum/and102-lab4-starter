@@ -1,52 +1,48 @@
-# Lab 4: Article Search
+# Android Project 6 - *Fitbit2*
 
-Course Link: [CodePath Android Course](https://courses.codepath.org/courses/and102/unit/4#!labs)
+Submitted by: **Charles Wang**
 
-Submitted by: **CHARLES WANG** <!-- Replace 'Your Name Here' with your actual name -->
+**Fitbit2** is a health metrics app that allows users to track ... [TODO] 
 
-**Article Search** is an app designed to display the most recent articles from the NY Times.
+Time spent: **3** hours spent in total
 
-Time spent: **2** hours spent in total <!-- Replace 'X' with the number of hours you spent on this project -->
-
-## Application Features
-
-### Required Features
+## Required Features
 
 The following **required** functionality is completed:
 
-- [x] (3 pts) **Articles are displayed using the RecyclerView.**
-  - <img src='ARTICLE SEARCH DEMO.gif' />
+- [x] **Use at least 2 Fragments**
+- [x] **Create a new dashboard fragment where users can see a summary of their entered data**
+- [x] **Use one of the Navigation UI Views (BottomNavigation, Drawer Layout, Top Bar) to move between the fragments**
 
-- [x] (4 pts) **Can navigate to the Article Details screen.**
-    - <img src='ARTICLE SEARCH DEMO.gif' />
+The following **optional** features are implemented:
 
-- [x] (3 pts) **Article images are downloaded and displayed using Glide.**
-  -  <img src='ARTICLE SEARCH DEMO.gif' />
+- [ ] **Add a more advanced UI (e.g: Graphing) for tracking trends in metrics**
+- [x] **Implement daily notifications to prompt users to fill in their data**
 
+The following **additional** features are implemented:
 
-### Stretch Features
+- [ ] List anything else that you can get done to improve the app functionality!
 
-The following **stretch** functionality is implemented:
+## Video Walkthrough
 
-- [x] (+2 pts bonus) **Enhanced the UI for the application with customized fonts and ConstraintLayout for each of the screens.**
-  -  <img src='ARTICLE SEARCH DEMO.gif'>
+Here's a walkthrough of implemented user stories:
 
+<img src='demo.gif' title='Video Walkthrough' width='' alt='Video Walkthrough' />
+
+<!-- Replace this with whatever GIF tool you used! -->
+GIF created with ...  
+<!-- Recommended tools:
+[Kap](https://getkap.co/) for macOS
+[ScreenToGif](https://www.screentogif.com/) for Windows
+[peek](https://github.com/phw/peek) for Linux. -->
 
 ## Notes
 
-Describe any challenges encountered while building the app. <!-- Replace this with your specific challenges and experiences -->
-
-## Resources
-
-- [Using Intents to Create Flows](https://guides.codepath.org/android/Using-Intents-to-Create-Flows)
-- [AsyncHTTPClient](https://guides.codepath.org/android/Using-CodePath-Async-Http-Client)
-- [GridLayoutManager](https://developer.android.com/reference/kotlin/androidx/recyclerview/widget/GridLayoutManager)
-- [GridView in Android](https://www.geeksforgeeks.org/gridview-in-android-with-example/)
+Describe any challenges encountered while building the app.
 
 ## License
 
-```plaintext
-    Copyright [2002] [Charles Wang]
+    Copyright [2024] [Charles Wang]
 
     Licensed under the Apache License, Version 2.0 (the "License");
     you may not use this file except in compliance with the License.
